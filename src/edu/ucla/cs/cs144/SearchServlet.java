@@ -17,10 +17,16 @@ public class SearchServlet extends HttpServlet implements Servlet {
         PrintWriter out = response.getWriter();
         out.println("<html><body>request received by search servlet!</body></html>");
         String q = request.getParameter("q");
-        String numResultsToSkip = request.getParameter("numResultsToSkip");
-        String numResultsToReturn = request.getParameter("numResultsToReturn");
+        int numResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
+        int numResultsToReturn = Integer.parseInt(request.getParameter("numResultsToReturn"));
         out.println("q: " + q);
         out.println("numResultsToSkip: " + numResultsToSkip);
         out.println("numResultsToReturn: " + numResultsToReturn);
+
+        SearchResult[] searchResults = AuctionSearchClient.basicSearch(q, numResultsToSkip, numResultsToReturn);
+        for (SearchResult sr : searchResults) {
+            out.println(sr.getItemId());
+            out.println(sr.getName());
+        }
     }
 }
