@@ -9,6 +9,7 @@
 	SearchResult[] searchResults = (SearchResult[]) request.getAttribute("searchResults");
 	for (SearchResult sr : searchResults) {
 		out.println(sr.getItemId());
+		out.println(sr.getName() + "<br>");
 	}
 %>
 </body>
