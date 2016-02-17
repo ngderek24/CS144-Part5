@@ -29,14 +29,14 @@ public class ItemServlet extends HttpServlet implements Servlet {
         PrintWriter out = response.getWriter();
         String itemID = request.getParameter("itemid");
         String xmlData = AuctionSearchClient.getXMLDataForItemId(itemID);
-        String name = processData(xmlData);
+        XMLBean xmlBean = processData(xmlData);
 
-        //request.setAttribute("name", xmlData);
-        //request.getRequestDispatcher("item.jsp").forward(request, response);
-        out.println(name);
+        request.setAttribute("xmlBean", xmlBean);
+        request.getRequestDispatcher("item.jsp").forward(request, response);
+        //out.println(name);
     }
 
-    private static String processData(String xmlData) {
+    private static XMLBean processData(String xmlData) {
         Document doc = null;
         try {
             doc = loadXMLFromString(xmlData);
@@ -56,9 +56,20 @@ public class ItemServlet extends HttpServlet implements Servlet {
             System.exit(3);
         }
 
+        XMLBean xmlBean = new XMLBean();
         Element item = doc.getDocumentElement();
-        String name = getElementTextByTagNameNR(item, "Name");
-        return name;
+        xmlBean.setItemID(getElementTextByTagNameNR(item, "ItemID"));
+        xmlBean.setName(getElementTextByTagNameNR(item, "Name"));
+        xmlBean.setCurrently(getElementTextByTagNameNR(item, "Currently"));
+        xmlBean.setBuyPrice(filterNullString(getElementTextByTagNameNR(item, "Buy_Price")));
+        xmlBean.setFirstBid(getElementTextByTagNameNR(item, "First_Bid"));
+        xmlBean.setNumOfBids(getElementTextByTagNameNR(item, "Number_of_Bids"));
+        xmlBean.setLocation(getElementTextByTagNameNR(item, "Location"));
+        xmlBean.setCountry(getElementTextByTagNameNR(item, "Country"));
+        xmlBean.setStarted(getElementTextByTagNameNR(item, "Started"));
+        xmlBean.setEnds(getElementTextByTagNameNR(item, "Ends"));
+        xmlBean.setDescription(getElementTextByTagNameNR(item, "Description"));
+        return xmlBean;
     }
 
     private static Document loadXMLFromString(String xml) throws Exception {
@@ -66,23 +77,6 @@ public class ItemServlet extends HttpServlet implements Servlet {
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         return builder.parse(is);
-    }
-
-    /* Non-recursive (NR) version of Node.getElementsByTagName(...)
-     */
-    static Element[] getElementsByTagNameNR(Element e, String tagName) {
-        Vector< Element > elements = new Vector< Element >();
-        Node child = e.getFirstChild();
-        while (child != null) {
-            if (child instanceof Element && child.getNodeName().equals(tagName))
-            {
-                elements.add( (Element)child );
-            }
-            child = child.getNextSibling();
-        }
-        Element[] result = new Element[elements.size()];
-        elements.copyInto(result);
-        return result;
     }
 
     /* Returns the first subelement of e matching the given tagName, or
@@ -120,5 +114,12 @@ public class ItemServlet extends HttpServlet implements Servlet {
             return getElementText(elem);
         else
             return "";
+    }
+
+    private static String filterNullString(String s) {
+        if (s.equals("")) {
+            s = "\\N";
+        }
+        return s;
     }
 }
