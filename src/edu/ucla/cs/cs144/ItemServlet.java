@@ -26,14 +26,13 @@ public class ItemServlet extends HttpServlet implements Servlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        PrintWriter out = response.getWriter();
+        //PrintWriter out = response.getWriter();
         String itemID = request.getParameter("itemid");
         String xmlData = AuctionSearchClient.getXMLDataForItemId(itemID);
         XMLBean xmlBean = processData(xmlData);
 
         request.setAttribute("xmlBean", xmlBean);
         request.getRequestDispatcher("item.jsp").forward(request, response);
-        //out.println(name);
     }
 
     private static XMLBean processData(String xmlData) {
@@ -64,11 +63,50 @@ public class ItemServlet extends HttpServlet implements Servlet {
         xmlBean.setBuyPrice(filterNullString(getElementTextByTagNameNR(item, "Buy_Price")));
         xmlBean.setFirstBid(getElementTextByTagNameNR(item, "First_Bid"));
         xmlBean.setNumOfBids(getElementTextByTagNameNR(item, "Number_of_Bids"));
+
+        Element locationElement = getElementByTagNameNR(item, "Location");
+        xmlBean.setLatitude(filterNullString(locationElement.getAttribute("Latitude")));
+        xmlBean.setLongitude(filterNullString(locationElement.getAttribute("Longitude")));
         xmlBean.setLocation(getElementTextByTagNameNR(item, "Location"));
         xmlBean.setCountry(getElementTextByTagNameNR(item, "Country"));
         xmlBean.setStarted(getElementTextByTagNameNR(item, "Started"));
         xmlBean.setEnds(getElementTextByTagNameNR(item, "Ends"));
         xmlBean.setDescription(getElementTextByTagNameNR(item, "Description"));
+
+        Element sellerElement = getElementByTagNameNR(item, "Seller");
+        xmlBean.setSellerRating(sellerElement.getAttribute("Rating"));
+        xmlBean.setSellerID(sellerElement.getAttribute("UserID"));
+
+        List<String> categories = new ArrayList<String>();
+        for (Element category : getElementsByTagNameNR(item, "Category")) {
+            categories.add(getElementText(category));
+        }
+        xmlBean.setCategories(categories);
+
+        List<Map<String, String>> bids = new ArrayList<Map<String, String>>();
+        Element bidsElements = getElementByTagNameNR(item, "Bids");
+        Element[] bidElements = getElementsByTagNameNR(bidsElements, "Bid");
+        for (Element bid : bidElements) {
+            Element bidder = getElementByTagNameNR(bid, "Bidder");
+            String bidderRating = bidder.getAttribute("Rating");
+            String bidderID = bidder.getAttribute("UserID");
+            String bidderLocation = filterNullString(getElementTextByTagNameNR(bidder, "Location"));
+            String bidderCountry = filterNullString(getElementTextByTagNameNR(bidder, "Country"));
+            String time = getElementTextByTagNameNR(bid, "Time");
+            String amount = getElementTextByTagNameNR(bid, "Amount");
+
+            Map<String, String> bidMap = new HashMap<String, String>();
+            bidMap.put("bidderRating", bidderRating);
+            bidMap.put("bidderID", bidderID);
+            bidMap.put("bidderLocation", bidderLocation);
+            bidMap.put("bidderCountry", bidderCountry);
+            bidMap.put("time", time);
+            bidMap.put("amount", amount);
+
+            bids.add(bidMap);
+        }
+        xmlBean.setBids(bids);
+
         return xmlBean;
     }
 
@@ -77,6 +115,23 @@ public class ItemServlet extends HttpServlet implements Servlet {
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         return builder.parse(is);
+    }
+
+    /* Non-recursive (NR) version of Node.getElementsByTagName(...)
+     */
+    static Element[] getElementsByTagNameNR(Element e, String tagName) {
+        Vector< Element > elements = new Vector< Element >();
+        Node child = e.getFirstChild();
+        while (child != null) {
+            if (child instanceof Element && child.getNodeName().equals(tagName))
+            {
+                elements.add( (Element)child );
+            }
+            child = child.getNextSibling();
+        }
+        Element[] result = new Element[elements.size()];
+        elements.copyInto(result);
+        return result;
     }
 
     /* Returns the first subelement of e matching the given tagName, or
@@ -118,7 +173,7 @@ public class ItemServlet extends HttpServlet implements Servlet {
 
     private static String filterNullString(String s) {
         if (s.equals("")) {
-            s = "\\N";
+            s = "N/A";
         }
         return s;
     }

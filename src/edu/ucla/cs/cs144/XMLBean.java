@@ -1,5 +1,8 @@
 package edu.ucla.cs.cs144;
 
+import java.util.List;
+import java.util.Map;
+
 public class XMLBean implements java.io.Serializable {
     private String itemID;
     private String name;
@@ -12,6 +15,12 @@ public class XMLBean implements java.io.Serializable {
     private String started;
     private String ends;
     private String description;
+    private String latitude;
+    private String longitude;
+    private String sellerRating;
+    private String sellerID;
+    private List<String> categories;
+    private List<Map<String, String>> bids;
 
     public String getItemID() {
         return itemID;
@@ -99,5 +108,53 @@ public class XMLBean implements java.io.Serializable {
 
     public void setBuyPrice(String buyPrice) {
         this.buyPrice = buyPrice;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getSellerRating() {
+        return sellerRating;
+    }
+
+    public void setSellerRating(String sellerRating) {
+        this.sellerRating = sellerRating;
+    }
+
+    public String getSellerID() {
+        return sellerID;
+    }
+
+    public void setSellerID(String sellerID) {
+        this.sellerID = sellerID;
+    }
+
+    public List<Map<String, String>> getBids() {
+        return bids;
+    }
+
+    public void setBids(List<Map<String, String>> bids) {
+        this.bids = bids;
     }
 }
