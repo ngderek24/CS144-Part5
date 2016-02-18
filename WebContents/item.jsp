@@ -3,9 +3,18 @@
 <html>
 <head>
 <title>Search Results</title>
+<script type="text/javascript" 
+    src="http://maps.google.com/maps/api/js?sensor=false"> 
+</script> 
+<style>
+	#map_canvas {
+		width: 500px;
+		height: 400px;
+	}
+</style>
 </head>
 
-<body>
+<body onload="initialize()">
 	<form action="item">
 	  	ItemID: <input type="text" name="itemid">
 	  	<input type="submit" value="Submit">
@@ -26,8 +35,10 @@
 	out.println("First Bid: " + xmlBean.getFirstBid() + "<br>");
 	out.println("Number of Bids: " + xmlBean.getNumOfBids() + "<br>");
 	out.println("Item Location: " + xmlBean.getLocation() + "<br>");
-	out.println("Latitude: " + xmlBean.getLatitude() + "<br>");
-	out.println("Longitude: " + xmlBean.getLongitude() + "<br>");
+	String latitude = xmlBean.getLatitude();
+	String longitude = xmlBean.getLongitude();
+	out.println("Latitude: " + latitude + "<br>");
+	out.println("Longitude: " + longitude + "<br>");
 	out.println("Item Country: " + xmlBean.getCountry() + "<br>");
 	out.println("Started: " + xmlBean.getStarted() + "<br>");
 	out.println("Ends: " + xmlBean.getEnds() + "<br>");
@@ -47,6 +58,22 @@
 	}
 	out.println("</ul>");
 %>
+<div id="map_canvas"></div>
 </body>
+
+<script type="text/javascript"> 
+  function initialize() { 
+  	var latitude = <%= latitude %>;
+  	var longitude = <%= longitude %>;
+    var latlng = new google.maps.LatLng(latitude, longitude); 
+    var myOptions = { 
+      zoom: 10, // default is 8  
+      center: latlng, 
+      mapTypeId: google.maps.MapTypeId.ROADMAP 
+    }; 
+    var map = new google.maps.Map(document.getElementById("map_canvas"), 
+        myOptions); 
+  } 
+</script> 
 
 </html>
