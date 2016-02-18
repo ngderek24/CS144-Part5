@@ -5,6 +5,11 @@
 </head>
 
 <body>
+	<form action="search">
+	  	Query: <input type="text" name="q">
+	  	<input type="hidden" name="numResultsToSkip" value="0">
+	  	<input type="hidden" name="numResultsToReturn" value="30">
+	</form>
 <%
 	SearchResult[] searchResults = (SearchResult[]) request.getAttribute("searchResults");
 	for (SearchResult sr : searchResults) {
