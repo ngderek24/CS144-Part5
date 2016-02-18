@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -83,9 +85,15 @@ public class ItemServlet extends HttpServlet implements Servlet {
         }
         xmlBean.setCategories(categories);
 
-        List<Map<String, String>> bids = new ArrayList<Map<String, String>>();
-        Element bidsElements = getElementByTagNameNR(item, "Bids");
-        Element[] bidElements = getElementsByTagNameNR(bidsElements, "Bid");
+        xmlBean.setBids(getBidsList(item));
+
+        return xmlBean;
+    }
+
+    private static List<Map<String, String>> getBidsList(Element item) {
+        Element bidsElement = getElementByTagNameNR(item, "Bids");
+        Element[] bidElements = getElementsByTagNameNR(bidsElement, "Bid");
+        Map<Date, Map<String, String>> dateToBidMap = new TreeMap<>(Collections.reverseOrder());
         for (Element bid : bidElements) {
             Element bidder = getElementByTagNameNR(bid, "Bidder");
             String bidderRating = bidder.getAttribute("Rating");
@@ -103,11 +111,22 @@ public class ItemServlet extends HttpServlet implements Servlet {
             bidMap.put("time", time);
             bidMap.put("amount", amount);
 
-            bids.add(bidMap);
-        }
-        xmlBean.setBids(bids);
+            SimpleDateFormat inputFormat = new SimpleDateFormat("MMM-dd-yy HH:mm:ss");
+            Date timeDate = new Date();
+            try {
+                timeDate = inputFormat.parse(time);
+            } catch (ParseException e){
+                e.printStackTrace();
+            }
 
-        return xmlBean;
+            dateToBidMap.put(timeDate, bidMap);
+        }
+
+        List<Map<String, String>> bidsList = new ArrayList<Map<String, String>>();
+        for (Map.Entry<Date, Map<String, String>> bidEntry : dateToBidMap.entrySet()) {
+            bidsList.add(bidEntry.getValue());
+        }
+        return bidsList;
     }
 
     private static Document loadXMLFromString(String xml) throws Exception {
