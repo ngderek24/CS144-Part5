@@ -6,6 +6,10 @@
 </head>
 
 <body>
+	<form action="item">
+	  	ItemID: <input type="text" name="itemid">
+	  	<input type="submit" value="Submit">
+	</form>
 <%
 	XMLBean xmlBean = (XMLBean) request.getAttribute("xmlBean");
 	out.println("Item ID: " + xmlBean.getItemID() + "<br>");
