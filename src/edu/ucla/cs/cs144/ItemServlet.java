@@ -6,7 +6,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringReader;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -28,7 +27,6 @@ public class ItemServlet extends HttpServlet implements Servlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        //PrintWriter out = response.getWriter();
         String itemID = request.getParameter("itemid");
         String xmlData = AuctionSearchClient.getXMLDataForItemId(itemID);
         XMLBean xmlBean = processData(xmlData);
