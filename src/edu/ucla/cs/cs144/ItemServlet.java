@@ -57,7 +57,7 @@ public class ItemServlet extends HttpServlet implements Servlet {
 
         XMLBean xmlBean = new XMLBean();
         Element item = doc.getDocumentElement();
-        xmlBean.setItemID(getElementTextByTagNameNR(item, "ItemID"));
+        xmlBean.setItemID(item.getAttribute("ItemID"));
         xmlBean.setName(getElementTextByTagNameNR(item, "Name"));
         xmlBean.setCurrently(getElementTextByTagNameNR(item, "Currently"));
         xmlBean.setBuyPrice(filterNullString(getElementTextByTagNameNR(item, "Buy_Price")));

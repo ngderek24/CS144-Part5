@@ -8,7 +8,9 @@
 <%
 	SearchResult[] searchResults = (SearchResult[]) request.getAttribute("searchResults");
 	for (SearchResult sr : searchResults) {
-		out.println(sr.getItemId());
+		String itemID = sr.getItemId();
+		String itemLink = "<a href=\"item?itemid=" + itemID + "\">";
+		out.println(itemLink + itemID + "</a>");
 		out.println(sr.getName() + "<br>");
 	}
 %>
