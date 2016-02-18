@@ -34,9 +34,10 @@
 	out.println("Buy Price: " + xmlBean.getBuyPrice() + "<br>");
 	out.println("First Bid: " + xmlBean.getFirstBid() + "<br>");
 	out.println("Number of Bids: " + xmlBean.getNumOfBids() + "<br>");
-	out.println("Item Location: " + xmlBean.getLocation() + "<br>");
+	String itemLocation = xmlBean.getLocation();
 	String latitude = xmlBean.getLatitude();
 	String longitude = xmlBean.getLongitude();
+	out.println("Item Location: " + itemLocation + "<br>");
 	out.println("Latitude: " + latitude + "<br>");
 	out.println("Longitude: " + longitude + "<br>");
 	out.println("Item Country: " + xmlBean.getCountry() + "<br>");
@@ -62,18 +63,52 @@
 </body>
 
 <script type="text/javascript"> 
-  function initialize() { 
-  	var latitude = <%= latitude %>;
-  	var longitude = <%= longitude %>;
-    var latlng = new google.maps.LatLng(latitude, longitude); 
-    var myOptions = { 
-      zoom: 10, // default is 8  
-      center: latlng, 
-      mapTypeId: google.maps.MapTypeId.ROADMAP 
-    }; 
-    var map = new google.maps.Map(document.getElementById("map_canvas"), 
-        myOptions); 
-  } 
+	function initialize() { 
+	  	var latitude = "<%= latitude %>";
+		var longitude = "<%= longitude %>";
+		if (latitude == "N/A" || longitude == "N/A") {
+			geocodeAddress("<%= itemLocation %>");
+		} else {
+			console.log("lat long present");
+			var latlng = new google.maps.LatLng(latitude, longitude); 
+		    var myOptions = { 
+		      	zoom: 10, // default is 8  
+		      	center: latlng, 
+		      	mapTypeId: google.maps.MapTypeId.ROADMAP 
+			}; 
+		    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
+		    var marker = new google.maps.Marker({
+		        map: map,
+		        position: latlng
+			});
+		}
+	} 
+
+	function geocodeAddress(itemLocation) {
+  		geocoder = new google.maps.Geocoder();
+  		geocoder.geocode({ 'address': itemLocation }, function (results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				var latlng = results[0].geometry.location;
+		        var myOptions1 = { 
+			      	zoom: 10, // default is 8  
+			      	center: latlng, 
+			      	mapTypeId: google.maps.MapTypeId.ROADMAP 
+		    	}; 
+			    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions1); 
+		    	var marker = new google.maps.Marker({
+		            map: map,
+		            position: latlng
+		    	});
+			} else {
+				var myOptions2 = { 
+			      	zoom: 1, // default is 8  
+			      	center: new google.maps.LatLng(37, -120), 
+			      	mapTypeId: google.maps.MapTypeId.ROADMAP 
+		    	}; 
+		    	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions2); 
+			}
+		});
+	}
 </script> 
 
 </html>
