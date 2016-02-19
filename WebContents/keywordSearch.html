@@ -6,10 +6,26 @@
 
 <body>
 <form action="search">
-  Query: <input type="text" name="q">
+  Query: <input type="text" name="q" onKeyUp="sendQueryToServlet(this.value);">
   <input type="hidden" name="numResultsToSkip" value="0">
   <input type="hidden" name="numResultsToReturn" value="30">
 </form>
 </body>
 
+<script>
+	var xmlHttp = new XMLHttpRequest();
+	function sendQueryToServlet(query) {
+		var request = "suggest?q=" + encodeURI(query);
+
+		xmlHttp.open("GET", request);
+		xmlHttp.onreadystatechange = showSuggestion;
+		xmlHttp.send(null);
+	}
+
+	function showSuggestion() {
+		if (xmlHttp.readyState == 4) {
+			console.log(xmlHttp.responseText);
+		}
+	}
+</script>
 </html>
