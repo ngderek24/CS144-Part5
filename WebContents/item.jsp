@@ -46,18 +46,24 @@
 	out.println("Seller ID: " + xmlBean.getSellerID() + "<br>");
 	out.println("Seller Rating: " + xmlBean.getSellerRating() + "<br>");
 
-	out.println("Bids: <ul>");
-	for (Map<String, String> bid : xmlBean.getBids()) {
-		out.println("<li>");
-		out.println("Bidder ID: " + bid.get("bidderID") + "<br>");
-		out.println("Bidder Rating: " + bid.get("bidderRating") + "<br>");
-		out.println("Time: " + bid.get("time") + "<br>");
-		out.println("Amount: " + bid.get("amount") + "<br>");
-		out.println("Bidder Location: " + bid.get("bidderLocation") + "<br>");
-		out.println("Bidder Country: " + bid.get("bidderCountry") + "<br>");
-		out.println("</li>");
+	List<Map<String, String>> bids = xmlBean.getBids();
+	out.println("Bids: ");
+	if (bids.size() == 0) {
+		out.println("N/A");
+	} else {
+		out.println("<ul>");
+		for (Map<String, String> bid : bids) {
+			out.println("<li>");
+			out.println("Bidder ID: " + bid.get("bidderID") + "<br>");
+			out.println("Bidder Rating: " + bid.get("bidderRating") + "<br>");
+			out.println("Time: " + bid.get("time") + "<br>");
+			out.println("Amount: " + bid.get("amount") + "<br>");
+			out.println("Bidder Location: " + bid.get("bidderLocation") + "<br>");
+			out.println("Bidder Country: " + bid.get("bidderCountry") + "<br>");
+			out.println("</li>");
+		}
+		out.println("</ul>");
 	}
-	out.println("</ul>");
 %>
 <div id="map_canvas"></div>
 </body>
