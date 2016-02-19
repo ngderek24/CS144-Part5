@@ -10,6 +10,7 @@
   <input type="hidden" name="numResultsToSkip" value="0">
   <input type="hidden" name="numResultsToReturn" value="30">
 </form>
+<div id="suggestion"></div>
 </body>
 
 <script>
@@ -24,7 +25,17 @@
 
 	function showSuggestion() {
 		if (xmlHttp.readyState == 4) {
-			console.log(xmlHttp.responseText);
+			var xmlDoc = xmlHttp.responseXML;
+			if (xmlDoc != undefined) {
+				var suggestions = xmlDoc.getElementsByTagName("suggestion");
+				var limit = Math.min(suggestions.length, 5);
+				document.getElementById("suggestion").innerHTML = "";
+				for (i = 0; i < limit; i++) {
+					document.getElementById("suggestion").innerHTML += suggestions[i].attributes[0].nodeValue + "<br>";
+				}
+			} else {
+				document.getElementById("suggestion").innerHTML = "";
+			}
 		}
 	}
 </script>

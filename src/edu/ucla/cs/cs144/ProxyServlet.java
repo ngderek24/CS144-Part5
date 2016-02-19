@@ -37,6 +37,7 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 
         int status = ((HttpURLConnection) conn).getResponseCode();
         response.setStatus(status);
+        response.setContentType("text/xml");
         out.write(xmlData);
         out.flush();
         out.close();
