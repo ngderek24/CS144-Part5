@@ -3,9 +3,18 @@
 <html>
 <head>
 <title>Search Results</title>
+<script type="text/javascript" 
+    src="http://maps.google.com/maps/api/js?sensor=false"> 
+</script> 
+<style>
+	#map_canvas {
+		width: 500px;
+		height: 400px;
+	}
+</style>
 </head>
 
-<body>
+<body onload="initialize()">
 	<form action="item">
 	  	ItemID: <input type="text" name="itemid">
 	  	<input type="submit" value="Submit">
@@ -25,9 +34,12 @@
 	out.println("Buy Price: " + xmlBean.getBuyPrice() + "<br>");
 	out.println("First Bid: " + xmlBean.getFirstBid() + "<br>");
 	out.println("Number of Bids: " + xmlBean.getNumOfBids() + "<br>");
-	out.println("Item Location: " + xmlBean.getLocation() + "<br>");
-	out.println("Latitude: " + xmlBean.getLatitude() + "<br>");
-	out.println("Longitude: " + xmlBean.getLongitude() + "<br>");
+	String itemLocation = xmlBean.getLocation();
+	String latitude = xmlBean.getLatitude();
+	String longitude = xmlBean.getLongitude();
+	out.println("Item Location: " + itemLocation + "<br>");
+	out.println("Latitude: " + latitude + "<br>");
+	out.println("Longitude: " + longitude + "<br>");
 	out.println("Item Country: " + xmlBean.getCountry() + "<br>");
 	out.println("Started: " + xmlBean.getStarted() + "<br>");
 	out.println("Ends: " + xmlBean.getEnds() + "<br>");
@@ -47,6 +59,56 @@
 	}
 	out.println("</ul>");
 %>
+<div id="map_canvas"></div>
 </body>
+
+<script type="text/javascript"> 
+	function initialize() { 
+	  	var latitude = "<%= latitude %>";
+		var longitude = "<%= longitude %>";
+		if (latitude == "N/A" || longitude == "N/A") {
+			geocodeAddress("<%= itemLocation %>");
+		} else {
+			console.log("lat long present");
+			var latlng = new google.maps.LatLng(latitude, longitude); 
+		    var myOptions = { 
+		      	zoom: 10, // default is 8  
+		      	center: latlng, 
+		      	mapTypeId: google.maps.MapTypeId.ROADMAP 
+			}; 
+		    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
+		    var marker = new google.maps.Marker({
+		        map: map,
+		        position: latlng
+			});
+		}
+	} 
+
+	function geocodeAddress(itemLocation) {
+  		geocoder = new google.maps.Geocoder();
+  		geocoder.geocode({ 'address': itemLocation }, function (results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				var latlng = results[0].geometry.location;
+		        var myOptions1 = { 
+			      	zoom: 10, // default is 8  
+			      	center: latlng, 
+			      	mapTypeId: google.maps.MapTypeId.ROADMAP 
+		    	}; 
+			    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions1); 
+		    	var marker = new google.maps.Marker({
+		            map: map,
+		            position: latlng
+		    	});
+			} else {
+				var myOptions2 = { 
+			      	zoom: 1, // default is 8  
+			      	center: new google.maps.LatLng(37, -120), 
+			      	mapTypeId: google.maps.MapTypeId.ROADMAP 
+		    	}; 
+		    	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions2); 
+			}
+		});
+	}
+</script> 
 
 </html>
