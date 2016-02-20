@@ -45,6 +45,7 @@
 	out.println("Ends: " + xmlBean.getEnds() + "<br>");
 	out.println("Seller ID: " + xmlBean.getSellerID() + "<br>");
 	out.println("Seller Rating: " + xmlBean.getSellerRating() + "<br>");
+	out.println("Description: " + xmlBean.getDescription() + "<br>");
 
 	List<Map<String, String>> bids = xmlBean.getBids();
 	out.println("Bids: ");
