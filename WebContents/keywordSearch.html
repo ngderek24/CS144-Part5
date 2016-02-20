@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Keyword Search</title>
+	
 </head>
 
 <body>
@@ -12,7 +13,18 @@
 </form>
 <div id="suggestion"></div>
 </body>
-
+<script type="text/javascript">
+    window.onload = function () {
+    	var textbox = document.getElementById("q");
+    	if (textbox == null) {
+    		console.log("textbox null");
+    	}
+    	console.log("initSuggestions called");
+    	var oTextbox = new AutoSuggestControl(document.getElementById("q"), new SuggestionProvider());
+        //var suggestionProvider = ;
+        //suggestionProvider.requestSuggestions(oTextbox);
+    }
+</script>
 <script>
 	var xmlHttp = new XMLHttpRequest();
 	function sendQueryToServlet(query) {
@@ -37,6 +49,71 @@
 				document.getElementById("suggestion").innerHTML = "";
 			}
 		}
+	}
+
+	AutoSuggestControl.prototype.selectRange = function (start, length) {
+		if (this.textbox.createTextRange) {
+        var oRange = this.textbox.createTextRange();
+        oRange.moveStart("character", start);
+        oRange.moveEnd("character", length - this.textbox.value.length);
+        oRange.select();
+	    } else if (this.textbox.setSelectionRange) {
+	        this.textbox.setSelectionRange(start, length);
+	    }
+
+	    this.textbox.focus();
+	};
+
+	AutoSuggestControl.prototype.typeAhead = function (suggestion) {
+		if (this.textbox.createTextRange || this.textbox.setSelectionRange) {
+	        var textboxLength = this.textbox.value.length;
+	        this.textbox.value = suggestion;
+	        this.selectRange(textboxLength, suggestion.length);
+    	}
+	};
+
+	AutoSuggestControl.prototype.autosuggest = function (suggestions) {
+		if (suggestions.length > 0) {
+	        this.typeAhead(suggestions[0]);
+	    }
+	};
+
+	AutoSuggestControl.prototype.handleKeyUp = function (event) {
+		console.log("handleKeyUp called");
+		var iKeyCode = event.keyCode;
+
+	    if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode <= 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
+	        //ignore
+	    } else {
+	    	this.provider.requestSuggestions(this);
+	    }
+	};
+
+	AutoSuggestControl.prototype.init = function () {
+		console.log("init called!");
+		var oThis = this;
+	    this.textbox.onkeyup = function (oEvent) {
+	        if (!oEvent) {
+	            oEvent = window.event;
+	        }
+	        oThis.handleKeyUp(oEvent);
+	    };
+	};
+
+	function AutoSuggestControl(textbox, provider) {
+		this.provider = provider;
+		this.textbox = textbox;
+		this.init();
+	}
+
+	SuggestionProvider.prototype.requestSuggestions = function (autoSuggestControlObj) {
+		var suggestions = new Array();
+		suggestions[0] = "batman";
+		autoSuggestControlObj.autosuggest(suggestions);
+	};
+
+	function SuggestionProvider() {
+		
 	}
 </script>
 </html>
