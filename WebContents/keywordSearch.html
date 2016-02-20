@@ -7,34 +7,28 @@
 
 <body>
 <form action="search">
-  Query: <input type="text" name="q" onKeyUp="sendQueryToServlet(this.value);">
+  Query: <input type="text" id="query" name="q">
   <input type="hidden" name="numResultsToSkip" value="0">
   <input type="hidden" name="numResultsToReturn" value="30">
 </form>
 <div id="suggestion"></div>
-</body>
+
 <script type="text/javascript">
     window.onload = function () {
-    	var textbox = document.getElementById("q");
-    	if (textbox == null) {
-    		console.log("textbox null");
-    	}
-    	console.log("initSuggestions called");
-    	var oTextbox = new AutoSuggestControl(document.getElementById("q"), new SuggestionProvider());
+    	var oTextbox = new AutoSuggestControl(document.getElementById("query"), new SuggestionProvider());
         //var suggestionProvider = ;
         //suggestionProvider.requestSuggestions(oTextbox);
     }
-</script>
-<script>
+
 	var xmlHttp = new XMLHttpRequest();
-	function sendQueryToServlet(query) {
+	function sendQueryToServlet(query, obj) {
 		var request = "suggest?q=" + encodeURI(query);
 
 		xmlHttp.open("GET", request);
-		xmlHttp.onreadystatechange = showSuggestion;
+		xmlHttp.onreadystatechange = showSuggestion(obj);
 		xmlHttp.send(null);
 	}
-
+	/*
 	function showSuggestion() {
 		if (xmlHttp.readyState == 4) {
 			var xmlDoc = xmlHttp.responseXML;
@@ -47,6 +41,23 @@
 				}
 			} else {
 				document.getElementById("suggestion").innerHTML = "";
+			}
+		}
+	}
+	*/
+	function showSuggestion(autoSuggestControlObj) {
+		var suggestions = new Array();
+		
+		if (xmlHttp.readyState == 4) {
+			var xmlDoc = xmlHttp.responseXML;
+			if (xmlDoc != undefined) {
+				var suggests = xmlDoc.getElementsByTagName("suggestion");
+				for (i = 0; i < suggests.length; i++) {
+					suggestions[i] = suggests[i].attributes[0].nodeValue;
+				}
+				autoSuggestControlObj.autosuggest(suggestions);
+			} else {
+				//document.getElementById("suggestion").innerHTML = "";
 			}
 		}
 	}
@@ -79,7 +90,6 @@
 	};
 
 	AutoSuggestControl.prototype.handleKeyUp = function (event) {
-		console.log("handleKeyUp called");
 		var iKeyCode = event.keyCode;
 
 	    if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode <= 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
@@ -90,7 +100,6 @@
 	};
 
 	AutoSuggestControl.prototype.init = function () {
-		console.log("init called!");
 		var oThis = this;
 	    this.textbox.onkeyup = function (oEvent) {
 	        if (!oEvent) {
@@ -107,13 +116,29 @@
 	}
 
 	SuggestionProvider.prototype.requestSuggestions = function (autoSuggestControlObj) {
-		var suggestions = new Array();
-		suggestions[0] = "batman";
-		autoSuggestControlObj.autosuggest(suggestions);
+		//var suggestions = new Array();
+		//suggestions[0] = "batman";
+		
+		sendQueryToServlet(document.getElementById("query").value, autoSuggestControlObj);
+		/*
+		if (xmlHttp.readyState == 4) {
+			var xmlDoc = xmlHttp.responseXML;
+			if (xmlDoc != undefined) {
+				var suggests = xmlDoc.getElementsByTagName("suggestion");
+				for (i = 0; i < suggests.length; i++) {
+					suggestions[i] = suggests[i].attributes[0].nodeValue;
+				}
+				autoSuggestControlObj.autosuggest(suggestions);
+			} else {
+				//document.getElementById("suggestion").innerHTML = "";
+			}
+		} */
+		//autoSuggestControlObj.autosuggest(suggestions); 
 	};
 
 	function SuggestionProvider() {
 		
 	}
 </script>
+</body>
 </html>
