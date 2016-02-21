@@ -14,11 +14,22 @@ public class SearchServlet extends HttpServlet implements Servlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String q = request.getParameter("q");
-        int numResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
-        int numResultsToReturn = Integer.parseInt(request.getParameter("numResultsToReturn"));
+        String numResultsToSkipString = request.getParameter("numResultsToSkip");
+        String numResultsToReturnString = request.getParameter("numResultsToReturn");
 
-        SearchResult[] searchResults = AuctionSearchClient.basicSearch(q, numResultsToSkip, numResultsToReturn);
-        request.setAttribute("searchResults", searchResults);
-        request.getRequestDispatcher("searchResults.jsp").forward(request, response);
+        if (isNumeric(numResultsToSkipString) && isNumeric(numResultsToReturnString)) {
+            int numResultsToSkip = Integer.parseInt(numResultsToSkipString);
+            int numResultsToReturn = Integer.parseInt(numResultsToReturnString);
+
+            SearchResult[] searchResults = AuctionSearchClient.basicSearch(q, numResultsToSkip, numResultsToReturn);
+            request.setAttribute("searchResults", searchResults);
+            request.getRequestDispatcher("searchResults.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("error.html").forward(request, response);
+        }
+    }
+
+    private static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
     }
 }
