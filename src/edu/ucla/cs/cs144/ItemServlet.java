@@ -28,11 +28,20 @@ public class ItemServlet extends HttpServlet implements Servlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String itemID = request.getParameter("itemid");
-        String xmlData = AuctionSearchClient.getXMLDataForItemId(itemID);
-        XMLBean xmlBean = processData(xmlData);
 
-        request.setAttribute("xmlBean", xmlBean);
-        request.getRequestDispatcher("item.jsp").forward(request, response);
+        if (isNumeric(itemID) && itemID.length() == 10) {
+            String xmlData = AuctionSearchClient.getXMLDataForItemId(itemID);
+            XMLBean xmlBean = processData(xmlData);
+
+            request.setAttribute("xmlBean", xmlBean);
+            request.getRequestDispatcher("item.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("error.html").forward(request, response);
+        }
+    }
+
+    private static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
     }
 
     private static XMLBean processData(String xmlData) {
