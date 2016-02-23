@@ -2,14 +2,17 @@
 <html>
 <head>
 <title>Search Results</title>
+<link rel="stylesheet" type="text/css" href="keywordSearch.css">
+<script type="text/javascript"  src="googleSuggest.js"></script>
 </head>
 
 <body>
 	<form action="search">
-	  	Query: <input type="text" name="q">
+	  	Query: <input type="text" id="query" name="q">
 	  	<input type="hidden" name="numResultsToSkip" value="0">
 	  	<input type="hidden" name="numResultsToReturn" value="30">
 	</form>
+	<div id="suggestion"></div>
 <%
 	SearchResult[] searchResults = (SearchResult[]) request.getAttribute("searchResults");
 	for (SearchResult sr : searchResults) {
