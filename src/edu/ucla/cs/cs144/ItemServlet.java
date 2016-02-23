@@ -31,8 +31,12 @@ public class ItemServlet extends HttpServlet implements Servlet {
 
         if (isNumeric(itemID) && itemID.length() == 10) {
             String xmlData = AuctionSearchClient.getXMLDataForItemId(itemID);
-            XMLBean xmlBean = processData(xmlData);
-
+            XMLBean xmlBean = null;
+            try {
+                xmlBean = processData(xmlData);
+            } catch (Exception e){
+                //xmlBean = null;
+            }
             request.setAttribute("xmlBean", xmlBean);
             request.getRequestDispatcher("item.jsp").forward(request, response);
         } else {
@@ -44,25 +48,25 @@ public class ItemServlet extends HttpServlet implements Servlet {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
 
-    private static XMLBean processData(String xmlData) {
+    private static XMLBean processData(String xmlData) throws Exception {
         Document doc = null;
-        try {
+        //try {
             doc = loadXMLFromString(xmlData);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(3);
-        }
-        catch (SAXException e) {
-            System.out.println("Parsing error on file " + xmlData);
-            System.out.println("  (not supposed to happen with supplied XML files)");
-            e.printStackTrace();
-            System.exit(3);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.exit(3);
-        }
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//            System.exit(3);
+//        }
+//        catch (SAXException e) {
+//            System.out.println("Parsing error on file " + xmlData);
+//            System.out.println("  (not supposed to happen with supplied XML files)");
+//            e.printStackTrace();
+//            System.exit(3);
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//            System.exit(3);
+//        }
 
         XMLBean xmlBean = new XMLBean();
         Element item = doc.getDocumentElement();

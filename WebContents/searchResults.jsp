@@ -15,27 +15,31 @@
 	<div id="suggestion"></div>
 <%
 	SearchResult[] searchResults = (SearchResult[]) request.getAttribute("searchResults");
-	for (SearchResult sr : searchResults) {
-		String itemID = sr.getItemId();
-		String itemLink = "<a href=\"item?itemid=" + itemID + "\">";
-		out.println(itemLink + itemID + "</a>");
-		out.println(sr.getName() + "<br>");
-	}
+	if (searchResults.length == 0)
+		out.println("<h1>No search result found");
+	else {
+		for (SearchResult sr : searchResults) {
+			String itemID = sr.getItemId();
+			String itemLink = "<a href=\"item?itemid=" + itemID + "\">";
+			out.println(itemLink + itemID + "</a>");
+			out.println(sr.getName() + "<br>");
+		}
 
-	String q = request.getParameter("q");
-	int prevNumResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
-	int nextNumResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
-	if (prevNumResultsToSkip >= 30) {
-		prevNumResultsToSkip -= 30;
-	}
-	if (searchResults.length == 30) {
-		nextNumResultsToSkip += 30;
-	}
+		String q = request.getParameter("q");
+		int prevNumResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
+		int nextNumResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
+		if (prevNumResultsToSkip >= 30) {
+			prevNumResultsToSkip -= 30;
+		}
+		if (searchResults.length == 30) {
+			nextNumResultsToSkip += 30;
+		}
 
-    String prevUrl = String.format("search?q=%s&numResultsToSkip=%d&numResultsToReturn=30", q, prevNumResultsToSkip);
-    String nextUrl = String.format("search?q=%s&numResultsToSkip=%d&numResultsToReturn=30", q, nextNumResultsToSkip);
-    out.println("<br><button><a href=\"" + prevUrl + "\">Previous</a></button>");
-    out.println("<button><a href=\"" + nextUrl + "\">Next</a></button>");
+	    String prevUrl = String.format("search?q=%s&numResultsToSkip=%d&numResultsToReturn=30", q, prevNumResultsToSkip);
+	    String nextUrl = String.format("search?q=%s&numResultsToSkip=%d&numResultsToReturn=30", q, nextNumResultsToSkip);
+	    out.println("<br><button><a href=\"" + prevUrl + "\">Previous</a></button>");
+	    out.println("<button><a href=\"" + nextUrl + "\">Next</a></button>");
+	}
 %>
 </body>
 
