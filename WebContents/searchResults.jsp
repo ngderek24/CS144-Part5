@@ -37,8 +37,8 @@
 
 	    String prevUrl = String.format("search?q=%s&numResultsToSkip=%d&numResultsToReturn=30", q, prevNumResultsToSkip);
 	    String nextUrl = String.format("search?q=%s&numResultsToSkip=%d&numResultsToReturn=30", q, nextNumResultsToSkip);
-	    out.println("<br><button><a href=\"" + prevUrl + "\">Previous</a></button>");
-	    out.println("<button><a href=\"" + nextUrl + "\">Next</a></button>");
+	    out.println("<br><a href=\"" + prevUrl + "\"><button>Previous</button></a>");
+	    out.println("<a href=\"" + nextUrl + "\"><button>Next</button></a>");
 	}
 %>
 </body>

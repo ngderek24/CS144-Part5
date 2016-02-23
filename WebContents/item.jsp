@@ -71,6 +71,8 @@
 		}
 	} else {
 		out.println("<h1>No match found</h1>");
+		latitude = "37";
+		longitude = "-120";
 	}
 %>
 <div id="map_canvas"></div>

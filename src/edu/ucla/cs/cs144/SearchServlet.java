@@ -17,7 +17,8 @@ public class SearchServlet extends HttpServlet implements Servlet {
         String numResultsToSkipString = request.getParameter("numResultsToSkip");
         String numResultsToReturnString = request.getParameter("numResultsToReturn");
 
-        if (isNumeric(numResultsToSkipString) && isNumeric(numResultsToReturnString)) {
+        if (q != null && numResultsToSkipString != null && numResultsToReturnString != null &&
+                isNumeric(numResultsToSkipString) && isNumeric(numResultsToReturnString)) {
             int numResultsToSkip = Integer.parseInt(numResultsToSkipString);
             int numResultsToReturn = Integer.parseInt(numResultsToReturnString);
 

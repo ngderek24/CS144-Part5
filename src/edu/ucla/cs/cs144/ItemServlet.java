@@ -29,7 +29,7 @@ public class ItemServlet extends HttpServlet implements Servlet {
     {
         String itemID = request.getParameter("itemid");
 
-        if (isNumeric(itemID) && itemID.length() == 10) {
+        if (itemID != null && isNumeric(itemID) && itemID.length() == 10) {
             String xmlData = AuctionSearchClient.getXMLDataForItemId(itemID);
             XMLBean xmlBean = null;
             try {
