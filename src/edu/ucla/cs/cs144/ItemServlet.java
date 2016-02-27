@@ -10,6 +10,7 @@ import java.io.StringReader;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -25,8 +26,7 @@ public class ItemServlet extends HttpServlet implements Servlet {
        
     public ItemServlet() {}
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String itemID = request.getParameter("itemid");
 
         if (itemID != null && isNumeric(itemID) && itemID.length() == 10) {
@@ -38,6 +38,12 @@ public class ItemServlet extends HttpServlet implements Servlet {
                 //xmlBean = null;
             }
             request.setAttribute("xmlBean", xmlBean);
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute("itemID", xmlBean.getItemID());
+            session.setAttribute("name", xmlBean.getName());
+            session.setAttribute("buyPrice", xmlBean.getBuyPrice());
+
             request.getRequestDispatcher("item.jsp").forward(request, response);
         } else {
             request.getRequestDispatcher("error.html").forward(request, response);

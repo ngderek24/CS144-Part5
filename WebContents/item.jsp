@@ -41,7 +41,7 @@
 		// generate pay now button if buyPrice available
 		out.println("Buy Price: " + buyPrice);
 		if (!buyPrice.equals("N/A")) {
-		    out.println("<a href='#'><button>Pay Now</button></a>");
+		    out.println("<a href='pay'><button>Pay Now</button></a>");
 		}
 		out.println("<br>");
 
