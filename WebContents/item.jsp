@@ -24,6 +24,7 @@
 	String latitude = "";
 	String longitude = "";
 	String itemLocation = "";
+	String buyPrice = "";
 	if (xmlBean != null) {
 		out.println("Item ID: " + xmlBean.getItemID() + "<br>");
 		out.println("Name: " + xmlBean.getName() + "<br>");
@@ -35,7 +36,15 @@
 		out.println("</ul>");
 		
 		out.println("Currently: " + xmlBean.getCurrently() + "<br>");
-		out.println("Buy Price: " + xmlBean.getBuyPrice() + "<br>");
+		buyPrice = xmlBean.getBuyPrice();
+
+		// generate pay now button if buyPrice available
+		out.println("Buy Price: " + buyPrice);
+		if (!buyPrice.equals("N/A")) {
+		    out.println("<a href='#'><button>Pay Now</button></a>");
+		}
+		out.println("<br>");
+
 		out.println("First Bid: " + xmlBean.getFirstBid() + "<br>");
 		out.println("Number of Bids: " + xmlBean.getNumOfBids() + "<br>");
 		itemLocation = xmlBean.getLocation();
