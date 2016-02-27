@@ -9,7 +9,7 @@
     out.println("Buy Price: " + (String) request.getAttribute("buyPrice") + "<br>");
 %>
 
-<form action='confirm' method='POST'>
+<form action=<%=(String) request.getAttribute("url")%> method='POST'>
     <input type="text" name="creditCardNumber"></input>
     <input type="submit" value="Submit"></input>
 </form>
