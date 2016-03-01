@@ -22,12 +22,9 @@ public class CreditCardServlet extends HttpServlet implements Servlet {
         request.setAttribute("name", name);
         request.setAttribute("buyPrice", buyPrice);
 
-        String url = String.format("https://%s:%s%s/confirm/",
-                request.getServerName(), request.getServerPort(), request.getContextPath());
-        String contextPath = request.getContextPath();
+        String url = String.format("https://%s:8443%s/confirm", request.getServerName(), request.getContextPath());
 
         request.setAttribute("url", url);
-        request.setAttribute("contextPath", contextPath);
 
         request.getRequestDispatcher("creditCardInputPage.jsp").forward(request, response);
     }

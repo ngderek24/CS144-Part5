@@ -10,7 +10,7 @@
 %>
 
 <form action=<%=(String) request.getAttribute("url")%> method='POST'>
-    <input type="text" name="creditCardNumber"></input>
+    Credit Card Number: <input type="text" name="creditCardNumber"></input>
     <input type="submit" value="Submit"></input>
 </form>
 </body>
