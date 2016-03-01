@@ -94,7 +94,6 @@
 		if (latitude == "N/A" || longitude == "N/A") {
 			geocodeAddress("<%= itemLocation %>");
 		} else {
-			console.log("lat long present");
 			var latlng = new google.maps.LatLng(latitude, longitude); 
 		    var myOptions = { 
 		      	zoom: 10, // default is 8  
